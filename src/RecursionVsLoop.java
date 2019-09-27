@@ -3,7 +3,7 @@ import java.util.Random;
 import java.util.function.Function;
 
 public class RecursionVsLoop {
-    private static final int BOUND = 20;
+    private static final int BOUND = 21;
     private static final int LOOP_COUNT = 5000000;
     private static final long SEED = 6535635;
     private static final long SLEEP = 2000;
