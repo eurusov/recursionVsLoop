@@ -1,17 +1,20 @@
 import java.math.BigInteger;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Function;
 
 public class RecursionVsLoop {
-    private static final int BOUND = 21;
+    private static final int BOUND = 93; // Exclusive upper bound for fibonacci
+    //    private static final int BOUND = 21; // Exclusive upper bound for factorial
     private static final int LOOP_COUNT = 4_000_000;
-//    private static final long SEED = 9378;
+    //    private static final long SEED = 9378;
     private static final long SEED = 6535635;
-    private static final long SLEEP = 4000;
+    private static final long SLEEP = 100;
     private static BigInteger checksum;
 
     public static void main(String[] args) throws InterruptedException {
 
+//        System.out.println(Long.MAX_VALUE);
+//        System.out.println(FibonacciMemo.fibRecursionMemo(BOUND));
         Random randomGen = new Random(SEED);
 
         long loopTotal = 0;
@@ -21,10 +24,10 @@ public class RecursionVsLoop {
             System.out.println("Pass: " + (i + 1));
             long seed = randomGen.nextLong();
 
-            long loopTime = funcRunner(RecursionVsLoop::factLoop, seed);
+            long loopTime = funcRunner(RecursionVsLoop::fibLoop, seed);
 //            System.out.println("Loop checksum      : " + checksum);
             BigInteger prevChecksum = checksum;
-            long recursionTime = funcRunner(RecursionVsLoop::factRecursion, seed);
+            long recursionTime = funcRunner(FibonacciMemo::fibRecursionMemo, seed);
 //            System.out.println("Recursion checksum : " + checksum);
 
             assert checksum.equals(prevChecksum);
@@ -64,5 +67,37 @@ public class RecursionVsLoop {
 
     private static long factRecursion(int n) {
         return (n > 1) ? n * factRecursion(n - 1) : 1L;
+    }
+
+
+    private static long fibLoop(int n) {
+        if (n < 2) {
+            return n;
+        }
+        long previous = 1;
+        long prePrevious = 0;
+        for (int i = 2; i <= n; i++) {
+            long current = previous + prePrevious;
+            prePrevious = previous;
+            previous = current;
+        }
+        return previous;
+    }
+
+    private static long fibRecursionNaive(int n) {
+        return (n > 1) ? fibRecursionNaive(n - 1) + fibRecursionNaive(n - 2) : n;
+    }
+
+    private static class FibonacciMemo {
+        private static Map<Integer, Long> fibMemo = new HashMap<>();
+
+        private static long fibRecursionMemo(int n) {
+            if (n < 2) {
+                return n;
+                /* or safely replaced to: */
+//                return fibMemo.computeIfAbsent(n, Long::valueOf);
+            }
+            return fibMemo.computeIfAbsent(n, v -> fibRecursionMemo(v - 1) + fibRecursionMemo(v - 2));
+        }
     }
 }
