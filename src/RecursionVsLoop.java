@@ -4,7 +4,8 @@ import java.util.function.Function;
 
 public class RecursionVsLoop {
     private static final int BOUND = 21;
-    private static final int LOOP_COUNT = 5_000_000;
+    private static final int LOOP_COUNT = 4_000_000;
+//    private static final long SEED = 9378;
     private static final long SEED = 6535635;
     private static final long SLEEP = 4000;
     private static BigInteger checksum;
@@ -53,20 +54,15 @@ public class RecursionVsLoop {
         return endTime - startTime;
     }
 
-    /* факториал неправильный, так как 0! = 1, а здесь это не учтено, но для бенчмарка это не имеет значения */
     private static long factLoop(int n) {
-        if (n < 3) {
-            return n;
-        }
-        long res = 1;
+        long res = 1L;
         for (int i = 2; i <= n; i++) {
             res *= i;
         }
         return res;
     }
 
-    /* факториал неправильный, так как 0! = 1, а здесь это не учтено, но для бенчмарка это не имеет значения */
     private static long factRecursion(int n) {
-        return (n < 3) ? n : n * factRecursion(n - 1);
+        return (n > 1) ? n * factRecursion(n - 1) : 1L;
     }
 }
